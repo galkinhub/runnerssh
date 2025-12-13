@@ -20,7 +20,7 @@ jobs:
         rm -rf exit
         for S in `seq 72000` 
         do
-          ${{ inputs.runs-on }} || true
+          ${{ inputs.run }} || true
           if [[ -f exit ]]
           then
             break
