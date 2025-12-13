@@ -16,7 +16,9 @@ jobs:
         key: workspace
         enableCrossOsArchive: true
     - shell: bash
-      run: rm -rf exit
+      run: |
+        rm -rf exit
+        sudo hostnamectl hostname ${{ runner.arch }}_${{ runner.os }}
     - shell: bash
       run: |
         while (${{ format(inputs.run, runner.arch, runner.os, runner.temp) }}) || true
@@ -32,4 +34,6 @@ jobs:
         done
         rm -rf exit
 
-
+#!/bin/bash
+#(sleep 5;  ssh -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 127.0.0.1 link --name X64_Linux) &
+#docker run --rm -it -p6666:2222 -e EXTERNAL_ADDRESS=109.188.87.160:6666 -e SEED_AUTHORIZED_KEYS="$(cat ~/.ssh/id_rsa.pub)" --mount type=tmpfs,destination=/data reversessh/reverse_ssh
