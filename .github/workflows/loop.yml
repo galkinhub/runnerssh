@@ -21,8 +21,17 @@ jobs:
     - shell: bash
       run: rm -rf exit
     - if: ${{ runner.os == 'Linux' }}
-      shell: bash
       run: sudo hostnamectl hostname ${{ runner.arch }}${{ runner.os }}
+    - if: ${{ runner.os == 'Windows' }}
+      run: |
+        $ComputerName = "${{ runner.arch }}${{ runner.os }}"
+        Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\Computername\Computername" -name "Computername" -value $ComputerName
+        Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\Computername\ActiveComputername" -name "Computername" -value $ComputerName
+        Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "Hostname" -value $ComputerName
+        Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "NV Hostname" -value  $ComputerName
+        Set-ItemProperty -path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -name "AltDefaultDomainName" -value $ComputerName
+        Set-ItemProperty -path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -name "DefaultDomainName" -value $ComputerName
+
     - shell: bash
       run: |
         while (${{ format(inputs.run, runner.arch, runner.os, runner.temp) }}) || true
